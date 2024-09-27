@@ -1,0 +1,86 @@
+# version: "3.9"
+
+services:
+  nginrox:
+    container_name: nginrox
+    build:
+      context: ./nginrox
+      dockerfile: Dockerfile
+    ports:
+      - "443:443"
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - inception_net
+    depends_on:
+      - wordpressrox
+
+  wordpressrox:
+    container_name: wordpressrox
+    build:
+      context: ./container_wordpress
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    # ports:
+    #   - 9000:9000
+    expose:
+      - "9000"
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - inception_net
+    depends_on:
+      - dbrox
+
+  dbrox:
+    build:
+      context: ./container_mariadb
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    container_name: dbrox
+    # ports:
+    #   - "3306"
+    expose:
+      - "3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # - ./conf/50-server.cnf:/etc/mysql/mariadb.conf.d/
+    networks:
+      - inception_net
+
+  # dbrox:
+  #   image: mariadb:10.5
+  #   env_file:
+  #     - .env
+  #   container_name: dbrox
+  #   # ports:
+  #   #   - 3306:3306
+  #   volumes:
+  #     - db_data:/var/lib/mysql
+  #     # - ./conf/50-server.cnf:/etc/mysql/mariadb.conf.d/
+  #   networks:
+  #     - inception_net
+
+
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/rraffi-k/data/db_data
+      o: bind
+
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/rraffi-k/data/wp_data
+      o: bind
+
+networks:
+  inception_net:
+    name: inception_net
+    driver: bridge
