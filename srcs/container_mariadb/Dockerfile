@@ -1,26 +1,25 @@
 
 
-FROM debian:latest
+FROM debian:bullseye
 
 RUN apt-get -y update \
-    && apt-get -y install mariadb-server mariadb-client
+    && apt-get -y install \
+    mariadb-server \
+    mariadb-client \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /run/mysqld &&\
-    chown -R mysql:mysql /run/mysqld && \
-    mkdir -p /var/log/mysql
+RUN mkdir -p /run/mysqld
+    && chown -R mysql:mysql /run/mysqld
 
 # EXPOSE 3306
 
-COPY ./mariadb.sh .
+COPY ./tools/mariadb.sh /tmp/
 
-COPY ./conf/mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf
-
-# COPY ./conf/mariadb.cnf /etc/mysql/mariadb.cnf
-# COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-# COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-
-RUN chmod +x ./mariadb.sh
+COPY ./tools/mariadb-server.cnf /etc/mysql/mariadb-server.cnf
 
 # CMD ["bash", "./mariadb.sh"]
 
 ENTRYPOINT ["bash", "./mariadb.sh"]
+
+CMD ["mariadbd", "--user=mysql"]

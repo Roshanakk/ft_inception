@@ -1,6 +1,13 @@
 #!/bin/bash
 
-set -ux
+echo "..Running setup.sh.."
+
+while ! mysql -h ${DB_HOSTNAME} -u ${DB_USER} -p${DB_PASSWORD} -D ${DB_NAME} 2>/dev/null; do
+	echo "Waiting for ${DB_NAME} to be created..."
+	sleep 2
+done
+
+echo "..MariaDB is up and running!"
 
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 chmod +x wp-cli.phar
@@ -44,8 +51,11 @@ then
     #     --role=author \
     #     --allow-root \
     #     --user_pass=$PUBLIC_PASS
-    
+else
+	echo "..WordPress is already installed and configured!"
+
 fi;
+
 
 php-fpm7.4 -F
 

@@ -1,7 +1,7 @@
-FROM debian:11
+FROM debian:bullseye
 
 RUN apt-get -y update && apt-get -y install nginx openssl \
-    && mkdir -p /etc/nginx/ssl \
+    && mkdir -p /etc/nginx/ssl /run/nginx \
     && openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
         -keyout /etc/nginx/ssl/rraffi-k.42.fr.key \
         -out /etc/nginx/ssl/rraffi-k.42.fr.crt \
