@@ -1,25 +1,20 @@
-
-
+# Mariadb image
 FROM debian:bullseye
 
-RUN apt-get -y update \
-    && apt-get -y install \
-    mariadb-server \
-    mariadb-client \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+	mariadb-server \
+	mariadb-client && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /run/mysqld
-    && chown -R mysql:mysql /run/mysqld
-
-# EXPOSE 3306
+RUN mkdir -p /run/mysqld && \
+	chown -R mysql:mysql /run/mysqld
 
 COPY ./tools/mariadb.sh /tmp/
+COPY ./tools/my.cnf /etc/mysql/my.cnf
 
-COPY ./tools/mariadb-server.cnf /etc/mysql/mariadb-server.cnf
+ENTRYPOINT ["sh", "/tmp/mariadb.sh"]
 
-# CMD ["bash", "./mariadb.sh"]
-
-ENTRYPOINT ["bash", "./mariadb.sh"]
+# EXPOSE 3306
 
 CMD ["mariadbd", "--user=mysql"]

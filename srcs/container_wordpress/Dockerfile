@@ -1,13 +1,13 @@
+# Custom WordPress container image
 FROM debian:bullseye
 
-RUN apt-get -y update && apt-get install -y \
-    mariadb-client \
-    php7.4-fpm \
-    php7.4-mysql \
-    wget \
-    unzip \
-    curl \
+# Install packages for wordpress and php-fpm
+RUN apt-get update && apt-get install -y \
+	curl \
+	mariadb-client \
 	php \
+	php-fpm \
+	php-mysqli \
 	php-gd \
 	php-curl \
 	php-zip \
@@ -16,14 +16,15 @@ RUN apt-get -y update && apt-get install -y \
 	php-json \
 	php-intl \
 	php-dom \
-	php-phar \
-	&& mkdir -p /run/php
+	php-phar && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/*
 
 COPY ./tools/php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
-COPY ./tools/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+COPY ./tools/www.conf  /etc/php/7.4/fpm/pool.d/www.conf
 
-COPY ./tools/setup.sh /tmp
+COPY ./tools/setup.sh /tmp/
 
 # EXPOSE 9000
 
-ENTRYPOINT ["/tmp/setup.sh"]
+ENTRYPOINT ["sh", "/tmp/setup.sh"]

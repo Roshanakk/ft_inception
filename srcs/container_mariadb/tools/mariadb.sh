@@ -1,8 +1,7 @@
-
-#!/bin/bash
-
+#!bin/sh
 echo "..Running 'mariadb.sh' script.."
 
+# CHeck if mariadb is already installed
 if [ ! -d "/var/lib/mysql/mysql" ]; then
 	# creating necessary directories to install and run mariadb
 	mkdir -p /var/lib/mysql /run/mysqld
@@ -12,6 +11,8 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	sed -i "s|skip-networking|# skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf
 	sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf.d/mariadb-server.cnf
 
+	# echo "..Installing mariadb.."
+	# mariadb-install-db --user=mysql --datadir=/var/lib/mysql --skip-test-db --skip-name-resolve --auth-root-authentication-method=normal
 	mariadb-install-db --user=mysql --datadir=/var/lib/mysql --skip-test-db
 else
 	echo "..mariadb already installed.."
@@ -42,4 +43,3 @@ else
 fi
 
 exec "$@"
-

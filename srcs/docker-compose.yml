@@ -1,0 +1,51 @@
+# version: "3.9"
+
+services:
+  dbrox:
+    container_name: dbrox
+    build: ./container_mariadb
+    image: dbrox:inception
+    env_file: .env
+    volumes: [db_data:/var/lib/mysql]
+    networks: [inception_net]
+    expose:
+      - "3306"
+    restart: always
+    
+  wordpressrox:
+    container_name: wordpressrox
+    build: ./container_wordpress
+    env_file: .env
+    volumes: [wp_data:/var/www/html]
+    networks: [inception_net]
+    depends_on: [dbrox]
+    expose:
+      - "9000"
+  
+  nginrox:
+    container_name: nginrox
+    build: ./nginrox
+    ports: ["443:443"]
+    volumes: [wp_data:/var/www/html]
+    networks: [inception_net]
+    depends_on: [wordpressrox]
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/rraffi-k/data/db_data
+
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/rraffi-k/data/wp_data
+
+networks:
+  inception_net:
+    name: inception_net
+    driver: bridge
