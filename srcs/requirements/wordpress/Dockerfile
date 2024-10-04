@@ -20,11 +20,13 @@ RUN apt-get update && apt-get install -y \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 
+# !!! ATTENTION. Exact location for PHP config files based on its version !!!
+# In `php-fpm.conf` line 17 and the very last line must contain the correct paths !
 COPY ./tools/php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
 COPY ./tools/www.conf  /etc/php/7.4/fpm/pool.d/www.conf
 
-COPY ./tools/setup.sh /tmp/
+COPY ./tools/config_wordpress.sh /tmp/
 
 # EXPOSE 9000
 
-ENTRYPOINT ["sh", "/tmp/setup.sh"]
+ENTRYPOINT ["sh", "/tmp/config_wordpress.sh"]

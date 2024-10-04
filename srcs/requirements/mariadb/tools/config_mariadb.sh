@@ -1,5 +1,5 @@
 #!bin/sh
-echo "..Running 'mariadb.sh' script.."
+echo "..Running 'config_mariadb.sh' script.."
 
 # CHeck if mariadb is already installed
 if [ ! -d "/var/lib/mysql/mysql" ]; then

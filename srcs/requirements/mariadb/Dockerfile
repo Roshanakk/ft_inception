@@ -10,10 +10,10 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir -p /run/mysqld && \
 	chown -R mysql:mysql /run/mysqld
 
-COPY ./tools/mariadb.sh /tmp/
+COPY ./tools/config_mariadb.sh /tmp/
 COPY ./tools/my.cnf /etc/mysql/my.cnf
 
-ENTRYPOINT ["sh", "/tmp/mariadb.sh"]
+ENTRYPOINT ["sh", "/tmp/config_mariadb.sh"]
 
 # EXPOSE 3306
 
