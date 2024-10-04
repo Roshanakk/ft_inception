@@ -6,7 +6,7 @@ services:
     container_name: mariadb-inception
     build: ./requirements/mariadb
     image: mariadb:inception
-    env_file: .env
+    env_file: /home/rraffi-k/inception/.env
     volumes: [database:/var/lib/mysql]
     networks: [inception] 
     restart: always
@@ -16,10 +16,12 @@ services:
     container_name: wordpress-inception
     build: ./requirements/wordpress
     image: wordpress:inception
-    env_file: .env
+    env_file: /home/rraffi-k/inception/.env
     volumes: [wordpress:/var/www/html]
     networks: [inception] 
     depends_on: [mariadb]
+    restart: always
+
   
   # Web-Server
   nginx:
@@ -30,6 +32,7 @@ services:
     volumes: [wordpress:/var/www/html]
     networks: [inception]
     depends_on: [wordpress]
+    restart: always
 
 # Local directories mapping
 volumes:

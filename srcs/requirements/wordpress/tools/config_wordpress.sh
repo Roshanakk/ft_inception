@@ -40,6 +40,11 @@ if ! $(wp core is-installed --allow-root --path=/var/www/html/); then
 
 	# Installing WordPress Core. This will create the WP user and password as well as the database tables
 	wp core install --allow-root --url=${WP_URL} --title="${WP_TITLE}" --admin_user=${WP_LOGIN} --admin_password=${WP_PASSWORD} --admin_email=${WP_EMAIL} --skip-email --path=/var/www/html/
+
+ # Creating additional users
+    echo "..Creating additional WordPress users.."
+    wp user create pichou pichou@example.com --role=author --user_pass=pichoupassword --allow-root --path=/var/www/html/
+
 else
 	echo "..WordPress is already installed and configured!"
 fi
